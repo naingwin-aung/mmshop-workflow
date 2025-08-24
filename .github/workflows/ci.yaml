@@ -56,9 +56,6 @@ jobs:
         
   test:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: read
       # metadata: read
     needs:
       - build
@@ -82,7 +79,7 @@ jobs:
         run: npm run test:cov
 
       - name: Upload coverage to Codecov
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: coverage
