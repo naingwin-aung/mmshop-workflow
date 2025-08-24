@@ -8,7 +8,6 @@ import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { ProductService } from '../src/product/product.service';
 import { Product } from '@prisma/client';
-import { PrismaClient } from '@prisma/client';
 
 const mockProductService = {
   product: jest.fn(),
@@ -34,7 +33,6 @@ const generateMockProduct = (
 
 describe('ProductController (e2e)', () => {
   let app: INestApplication;
-  let prisma: PrismaClient;
 
   beforeAll(async () => {});
 
@@ -96,6 +94,7 @@ describe('ProductController (e2e)', () => {
         .get(`/products/${productId}`)
         .expect(404)
         .then((response) => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           expect(response.body.message).toEqual(
             `Product with ID ${productId} not found`,
           );
@@ -172,6 +171,7 @@ describe('ProductController (e2e)', () => {
         .delete(`/products/${productId}`)
         .expect(404)
         .then((response) => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           expect(response.body.message).toEqual(
             `Product with ID ${productId} not found for deletion.`,
           );
