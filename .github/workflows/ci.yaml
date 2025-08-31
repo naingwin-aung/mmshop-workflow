@@ -7,8 +7,36 @@ on:
       - main
   workflow_dispatch:
 
+
+
 jobs:
+  
   build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+
+      - name: prisma generate
+        run: npx prisma generate
+          
+      - name: Build the project
+        run: npm run build
+
+
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -18,12 +46,45 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
       
       - name: Install dependencies
-        run: npm install
-      
+        run: npm ci
+          
       - name: Build the project
-        run: npm run build
+        run: npm run lint
+        
+  test:
+    runs-on: ubuntu-latest
+      # metadata: read
+    needs:
+      - build
+      - lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run tests
+        run: npm test
+
+      - name: Run test coverage
+        run: npm run test:cov
+
+      - name: Upload coverage to Codecov
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage
+
+
 
       
   
