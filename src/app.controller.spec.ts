@@ -14,7 +14,7 @@ describe('AppController', () => {
     appController = app.get<AppController>(AppController);
   });
 
-  describe('root', () => {
+  describe('root controller', () => {
     it('should return "Hello World!"', () => {
       expect(appController.getHello()).toStrictEqual({
         up: true,
