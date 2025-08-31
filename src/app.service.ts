@@ -6,7 +6,7 @@ export class AppService {
     return {
       up: true,
       ready: true,
-      message: 'App is running',
+      message: 'Application is running',
     };
   }
 }
