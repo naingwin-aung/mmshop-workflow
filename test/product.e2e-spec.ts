@@ -7,7 +7,7 @@ import {
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { ProductService } from '../src/product/product.service';
-import { Product } from '@prisma/client';
+import { Product } from '../generated/prisma';
 
 const mockProductService = {
   product: jest.fn(),

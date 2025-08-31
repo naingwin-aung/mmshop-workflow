@@ -8,7 +8,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { Product } from '@prisma/client';
+import { Product } from '../../generated/prisma';
 import { truncateDescription } from './product.helper';
 
 type InputData = {
