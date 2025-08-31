@@ -5,7 +5,7 @@ export class AppService {
   getAppStatus() {
     return {
       up: true,
-      ready: true,
+      ready: false,
       message: 'Application is running',
     };
   }
