@@ -126,5 +126,5 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker buildx build --platform linux/amd -t mmshop-product-api:latest .
+          docker buildx build --platform linux/amd64 -t mmshop-product-api:latest .
   
