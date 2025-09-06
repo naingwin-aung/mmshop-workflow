@@ -49,7 +49,7 @@ export class ProductController {
     });
   }
 
-  @Put(':id')
+  @Put('product/:id')
   async updateProduct(
     @Param('id') id: string,
     @Body() data: Partial<InputData>,
