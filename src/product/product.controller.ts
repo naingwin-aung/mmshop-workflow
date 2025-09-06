@@ -6,6 +6,7 @@ import {
   Body,
   Param,
   NotFoundException,
+  Put,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { Product } from '../../generated/prisma';
@@ -45,6 +46,17 @@ export class ProductController {
       price: data.price,
       productCategory: data.productCategory,
       productType: data.productType,
+    });
+  }
+
+  @Put(':id')
+  async updateProduct(
+    @Param('id') id: string,
+    @Body() data: Partial<InputData>,
+  ): Promise<Product> {
+    return this.productService.updateProduct({
+      where: { id },
+      data,
     });
   }
 
