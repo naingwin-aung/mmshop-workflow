@@ -1,16 +1,10 @@
-name: CI Workflow
+name: Release Workflow
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
-      - main
-      - develop
       - release/**
-  push:
-    branches:
-      - main
-      - develop
 
 concurrency:
   group: "${{ github.workflow }}-${{ github.ref }}"
@@ -128,4 +122,14 @@ jobs:
       - name: Build Docker image
         run: |
           docker buildx build --platform linux/amd64 -t mmshop-product-api:latest .
-  
+    
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker tag mmshop-product-api ${{ secrets.DOCKER_HUB_USERNAME }}/mmshop-product-api:latest
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/`mmshop-product-api:latest
