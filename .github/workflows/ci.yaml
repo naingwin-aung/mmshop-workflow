@@ -12,105 +12,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: prisma generate
-        run: npx prisma generate
-
-      - name: Build the project
-        run: npm run build
-
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build the project
-        run: npm run lint
-
-  test:
-    env:
-      DATABASE_URL: postgres://${{ secrets.POSTGRES_USENAME }}:${{secrets.POSTGRES_PASSWORD}}@localhost:5432/shop-product-docker
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:17
-        env:
-          POSTGRES_USER: ${{ secrets.POSTGRES_USENAME }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: shop-product-docker
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd="pg_isready -U postgres"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
-    needs:
-      - build
-      - lint
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - name: Install dependencies
-        run: npm ci
-
-      - name: prisma generate
-        run: npx prisma
-
-
-      - name: prisma migrate deploy
-        run: npm run db:migrate
-
-      - name: Run tests
-        run: npm test
-
-      - name: Run test coverage
-        run: npm run test:cov
-
-      - name: Upload coverage to Codecov
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: coverage
-  
+  common-jobs:
+    uses: ./.github/workflows/common-jobs.yaml
   dockernize:
+    needs:
+      - common-jobs
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
-    needs:
-      - build
-      - lint
-      - test
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
