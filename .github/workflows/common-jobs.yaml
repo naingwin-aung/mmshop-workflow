@@ -2,6 +2,19 @@ name: Common Jobs
 
 on:
   workflow_call:
+    secrets:
+      postgres_username:
+        required: true
+
+
+      postgres_password:
+        required: true
+    inputs:
+      is_release:
+        required: true
+        type: boolean
+        default: false
+
 
 jobs:
   build:
@@ -26,6 +39,7 @@ jobs:
         run: npm run build
 
   lint:
+    if: ${{ inputs.is_release == true }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -45,14 +59,14 @@ jobs:
 
   test:
     env:
-      DATABASE_URL: postgres://${{ secrets.POSTGRES_USENAME }}:${{secrets.POSTGRES_PASSWORD}}@localhost:5432/shop-product-docker
+      DATABASE_URL: postgres://${{ inputs.postgres_username }}:${{ inputs.postgres_password }}@localhost:5432/shop-product-docker
     runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres:17
         env:
-          POSTGRES_USER: ${{ secrets.POSTGRES_USENAME }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_USER: ${{ inputs.postgres_username }}
+          POSTGRES_PASSWORD: ${{ inputs.postgres_password }}
           POSTGRES_DB: shop-product-docker
         ports:
           - 5432:5432
@@ -61,6 +75,7 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
+    
 
     needs:
       - build
@@ -76,7 +91,7 @@ jobs:
           cache: 'npm'
       - name: Install dependencies
         run: npm ci
-
+        
       - name: prisma generate
         run: npx prisma
 

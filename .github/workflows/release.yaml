@@ -14,7 +14,11 @@ jobs:
 
   common-jobs:
     uses: ./.github/workflows/common-jobs.yaml
-    secrets: inherit
+    secrets:
+      postgres_username: ${{ secrets.POSTGRES_USENAME }}
+      postgres_password: ${{ secrets.POSTGRES_PASSWORD }}
+    with:
+      is_release: true
   dockernize:
     needs:
       - common-jobs
