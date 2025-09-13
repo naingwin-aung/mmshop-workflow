@@ -19,11 +19,16 @@ jobs:
       postgres_password: ${{ secrets.POSTGRES_PASSWORD }}
     with:
       is_release: true
+
   dockernize:
     needs:
       - common-jobs
     runs-on: ubuntu-latest
     steps:
+
+      - name: Output success status
+        run: |
+          echo "Common jobs success status: ${{ needs.common-jobs.outputs.is_success }}"
       - name: Checkout code
         uses: actions/checkout@v4
       

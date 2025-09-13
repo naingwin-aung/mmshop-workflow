@@ -14,6 +14,10 @@ on:
         required: true
         type: boolean
         default: false
+    outputs:
+      is_success:
+        description: 'Indicates if the jobs were successful'
+        value: ${{ jobs.test.result }}
 
 
 jobs:
