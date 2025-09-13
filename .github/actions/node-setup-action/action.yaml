@@ -1,0 +1,28 @@
+name: "Node Setup Action"
+description: "Sets up a Node.js environment for use in actions to be reused in workflows"
+
+inputs:
+  node-version:
+    description: 'Node.js version to set up'
+    required: false
+    default: '20'
+outputs:
+   is_success:
+     description: 'Indicates if the setup was successful'
+     value: ${{ steps.setup-node.outcome }}
+
+runs:
+  using: 'composite'
+  steps:
+     - name: Checkout code
+       uses: actions/checkout@v4
+
+     - name: Set up Node.js
+       uses: actions/setup-node@v4
+       with:
+        node-version: '${{ inputs.node-version }}'
+        cache: 'npm'
+
+     - name: Install dependencies
+       shell: bash
+       run: npm ci
