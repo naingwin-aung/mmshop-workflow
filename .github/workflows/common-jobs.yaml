@@ -24,6 +24,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       - name: Setup Node.js environment
         id: setup-node
         uses: ./.github/actions/node-setup-action
@@ -41,6 +43,8 @@ jobs:
     if: inputs.is_release == false
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       - name: Setup Node.js environment
         uses: ./.github/actions/node-setup-action
         with:
@@ -72,6 +76,8 @@ jobs:
     needs:
       - build
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       - name: Setup Node.js environment
         id: setup-node
         uses: ./.github/actions/node-setup-action
