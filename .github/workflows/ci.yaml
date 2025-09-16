@@ -1,34 +1,13 @@
-name: CI Workflow
+name: CI WorkFlow
 
-on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches:
-      - main
-      - develop
+on: 
+    pull_request:
+        branches:
+        - main
+        
+jobs: 
+    build: # job name
+        runs-on: ubuntu-latest # we can use custom runners too
 
-concurrency:
-  group: "${{ github.workflow }}-${{ github.ref }}"
-  cancel-in-progress: true
-
-jobs:
-  common-jobs:
-    uses: ./.github/workflows/common-jobs.yaml
-  dockernize:
-    needs:
-      - common-jobs
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build Docker image
-        run: |
-          docker buildx build --platform linux/amd64 -t mmshop-product-api:latest .
-  
+        steps:
+         - run: echo "Hello World from GitHub Actions" # step 1
