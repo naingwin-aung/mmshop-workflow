@@ -3,11 +3,14 @@ name: CI WorkFlow
 on: 
     pull_request:
         branches:
-        - main
+        - main # trigger github event
+    workflow_dispatch:
+
+# on: workflow_dispatch // manual trigger
         
 jobs: 
     build: # job name
         runs-on: ubuntu-latest # we can use custom runners too
 
         steps:
-         - run: echo "Hello World from GitHub Actions" # step 1
+         - run: echo "Hello World from GitHub Actions with manual" # step 1
