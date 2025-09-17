@@ -13,4 +13,4 @@ jobs:
         runs-on: ubuntu-latest # we can use custom runners too
 
         steps:
-         - run: echo "Hello World from GitHub Actions with manual" # step 1
+         - run: echo "Hello World from GitHub Actions with manual trigger" # step 1
