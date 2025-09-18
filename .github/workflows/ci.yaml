@@ -4,7 +4,6 @@ on:
     pull_request:
         branches:
         - main # trigger github event
-    workflow_dispatch:
 
 # on: workflow_dispatch // manual trigger
         
