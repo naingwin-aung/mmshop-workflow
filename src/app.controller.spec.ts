@@ -15,11 +15,11 @@ describe('AppController', () => {
   });
 
   describe('root controller #1', () => {
-    it('should return "Hello World!"', () => {
+    it('should return json', () => {
       expect(appController.getHello()).toStrictEqual({
         up: true,
         ready: true,
-        message: 'Application v0.0.1 is running',
+        message: 'Application v0.0.1 is running!',
       });
     });
   });
