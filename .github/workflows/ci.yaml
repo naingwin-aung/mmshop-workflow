@@ -8,9 +8,21 @@ on:
 
 # on: workflow_dispatch // manual trigger
         
-jobs: 
+jobs:
     build: # job name
-        runs-on: ubuntu-latest # we can use custom runners too
-
+        runs-on: ubuntu-latest # can use custom runners too
         steps:
-         - run: echo "Hello World from GitHub Actions with manual trigger" # step 1
+            - name: Checkout code # git clone
+              uses: actions/checkout@v5 # checkout code
+
+            - name: Set up Node
+              uses: actions/setup-node@v5
+              with:
+                node-version: '20'
+
+            - name: Install dependencies
+              run: npm install
+            #   working-directory: ./frontend # change directory
+
+            - name: Build the project
+              run: npm run build
