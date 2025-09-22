@@ -1,30 +1,20 @@
-FROM node:22-bookworm AS builder
+# scratch is a reserved name that refers to an empty image
+# define base image
+# FROM scratch
+FROM node:24-alpine3.21
 
-WORKDIR /usr/local/app
+COPY package.json package-lock.json /usr/local/bin/
 
-COPY package*.json ./
+WORKDIR /usr/local/bin
 
-COPY prisma ./prisma/
+RUN npm install
 
-RUN npm install --only-production && \
-    npx prisma generate
+COPY . /usr/local/bin/
 
-COPY . .
+# ENV PORT=3000 // not best practice environment variable
 
-RUN npm run build
+# ADD /usr/local/bin/logs
 
-FROM node:22-alpine AS runner
+# ENTRYPOINT [ "executable" ]
 
-COPY --from=builder --chown=node:node  /usr/local/app/package*.json ./
-COPY --from=builder --chown=node:node /usr/local/app/dist ./dist
-COPY --from=builder --chown=node:node /usr/local/app/prisma ./prisma
-COPY --from=builder --chown=node:node /usr/local/app/generated ./generated
-COPY --from=builder --chown=node:node /usr/local/app/node_modules ./node_modules
-
-EXPOSE 3000
-
-USER node
-
-ENTRYPOINT [ "npm" ]
-
-CMD [ "run", "start:prod" ]
+CMD ["npm", "start"]
