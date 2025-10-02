@@ -20,7 +20,7 @@ describe('AppController (e2e)', () => {
     return request(app.getHttpServer()).get('/').expect(200).expect({
       up: true,
       ready: true,
-      message: 'App is running',
+      message: 'Application v0.0.1 is running!',
     });
   });
 });

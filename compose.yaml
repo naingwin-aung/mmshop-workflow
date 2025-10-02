@@ -1,72 +1,27 @@
 services:
-  
-  migration:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: ["run", "db:migrate"]
-    environment:
-      - NODE_ENV=production
-      - DATABASE_URL=postgres://user:password@db:5432/mm_product_db
-    depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      - external
-
   mm_product_api:
     build:
       context: .
       dockerfile: Dockerfile
+      # not need to define
     command: ["run", "start:prod"]
+    # env_file:
+    #   - .env
     environment:
       - NODE_ENV=production
-      - PORT=3000
-      - DATABASE_URL=postgres://user:password@postgres:5432/mm_product_db
+      - PORT=30000
+      - DATABASE_URL=postgresql://user:password@db:5432/shop-product-docker
     ports:
-      - "3000:3000"
-    depends_on:
-      migration:
-        condition: service_completed_successfully
-    networks:
-      - internal
+      - "30000:30000"
 
   db:
     image: postgres:17-alpine
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: mm_product_db
+      POSTGRES_DB: shop-product-docker
     ports:
       - "5432:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U mm_product_db"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      external:
-        aliases:
-          - postgres
-          - mm_product_db
-      internal:
-        aliases:
-          - postgres
-          - mm_product_db
-
-
-volumes:
-  db-data:
-    driver: local
-    driver_opts:
-      type: none
-      device: ./db-data
-      o: bind
-
-networks:
-  internal:
-    driver: bridge
-  external:
-    driver: bridge
+      
