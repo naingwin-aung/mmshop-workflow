@@ -1,20 +1,34 @@
-# scratch is a reserved name that refers to an empty image
-# define base image
-# FROM scratch
-FROM node:24-alpine3.21
+FROM node:24-bookworm AS builder
 
-COPY package.json package-lock.json /usr/local/bin/
+COPY package.json package-lock.json /usr/local/app/
 
-WORKDIR /usr/local/bin
+COPY prisma /usr/local/app/prisma/
 
-RUN npm install
+WORKDIR /usr/local/app
 
-COPY . /usr/local/bin/
+RUN npm install && \
+    npx prisma generate
 
-# ENV PORT=3000 // not best practice environment variable
+COPY . .
 
-# ADD /usr/local/bin/logs
+RUN npm run build
 
-# ENTRYPOINT [ "executable" ]
+FROM node:24-alpine3.21 AS runner
 
-CMD ["npm", "start"]
+COPY --from=builder /usr/local/app/package*.json ./
+COPY --from=builder /usr/local/app/dist ./dist
+COPY --from=builder /usr/local/app/prisma ./prisma
+COPY --from=builder /usr/local/app/generated ./generated
+COPY --from=builder /usr/local/app/node_modules ./node_modules
+
+EXPOSE 3000
+
+# create a non-root user to run our application
+# RUN useradd --user-group --create-home --shell /bin/false node
+
+# use non-root user to run our application
+USER node
+
+ENTRYPOINT [ "npm" ]
+
+CMD ["run", "start:prod"]
