@@ -1,4 +1,16 @@
 services:
+  migration:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["run", "db:migrate"]
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://user:password@db:5432/mm_product_db
+    depends_on:
+      db:
+        condition: service_healthy
+
   mm_product_api:
     build:
       context: .
@@ -7,21 +19,30 @@ services:
     command: ["run", "start:prod"]
     # env_file:
     #   - .env
+    restart: always
     environment:
       - NODE_ENV=production
-      - PORT=30000
-      - DATABASE_URL=postgresql://user:password@db:5432/shop-product-docker
+      - PORT=3000
+      - DATABASE_URL=postgresql://user:password@db:5432/mm_product_db
     ports:
-      - "30000:30000"
+      - "3000:3000"
+    depends_on:
+      migration:
+        condition: service_completed_successfully
 
   db:
     image: postgres:17-alpine
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: shop-product-docker
+      POSTGRES_DB: mm_product_db
     ports:
       - "5432:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mm_product_db"]
+
+volumes:
+  db-data:
       

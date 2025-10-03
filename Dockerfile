@@ -14,12 +14,12 @@ COPY . .
 RUN npm run build
 
 FROM node:24-alpine3.21 AS runner
-
-COPY --from=builder /usr/local/app/package*.json ./
-COPY --from=builder /usr/local/app/dist ./dist
-COPY --from=builder /usr/local/app/prisma ./prisma
-COPY --from=builder /usr/local/app/generated ./generated
-COPY --from=builder /usr/local/app/node_modules ./node_modules
+# node is user, node is group
+COPY --from=builder --chown=node:node /usr/local/app/package*.json ./
+COPY --from=builder --chown=node:node /usr/local/app/dist ./dist
+COPY --from=builder --chown=node:node /usr/local/app/prisma ./prisma
+COPY --from=builder --chown=node:node /usr/local/app/generated ./generated
+COPY --from=builder --chown=node:node /usr/local/app/node_modules ./node_modules
 
 EXPOSE 3000
 
