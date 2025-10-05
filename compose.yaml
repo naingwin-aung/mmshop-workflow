@@ -10,6 +10,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - internal
 
   mm_product_api:
     build:
@@ -23,12 +25,14 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - DATABASE_URL=postgresql://user:password@db:5432/mm_product_db
+      - DATABASE_URL=postgresql://user:password@postgres:5432/mm_product_db
     ports:
       - "3000:3000"
     depends_on:
       migration:
         condition: service_completed_successfully
+    networks:
+      - internal
 
   db:
     image: postgres:17-alpine
@@ -39,10 +43,24 @@ services:
     ports:
       - "5432:5432"
     volumes:
+      # - db-data:/var/lib/postgresql/data:rw
       - db-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U mm_product_db"]
+    networks:
+      internal:
+        aliases:
+          - postgres
+          - mm_product_db
 
 volumes:
   db-data:
-      
+   driver: local
+   driver_opts:
+      type: none
+      device: ./db-data
+      o: bind
+
+networks:
+  internal:
+    driver: bridge
