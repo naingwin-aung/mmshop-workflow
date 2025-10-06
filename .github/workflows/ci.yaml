@@ -3,7 +3,7 @@ name: CI WorkFlow
 on:
   pull_request:
     branches:
-      - main # trigger github event
+      - main # trigger github events
     # types: [opened, synchronize, reopened, closed]
 
 # on: workflow_dispatch // manual trigger
