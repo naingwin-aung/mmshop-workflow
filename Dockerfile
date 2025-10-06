@@ -24,7 +24,7 @@ COPY --from=builder --chown=node:node /usr/local/app/node_modules ./node_modules
 EXPOSE 3000
 
 # create a non-root user to run our application
-# RUN useradd --user-group --create-home --shell /bin/false node
+# RUN useradd --user-group --create-home --shell /bin/false nodes
 
 # use non-root user to run our application
 USER node
