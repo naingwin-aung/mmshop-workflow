@@ -1,4 +1,4 @@
-# services
+# service
 services:
   migration:
     build:
