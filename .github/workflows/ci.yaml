@@ -1,16 +1,113 @@
 name: CI WorkFlow
 
-on: 
-    pull_request:
-        branches:
-        - main # trigger github event
-    workflow_dispatch:
+on:
+  pull_request:
+    branches:
+      - main # trigger github event
+    # types: [opened, synchronize, reopened, closed]
+    types: [opened, synchronize, reopened]
 
 # on: workflow_dispatch // manual trigger
-        
-jobs: 
-    build: # job name
-        runs-on: ubuntu-latest # we can use custom runners too
 
-        steps:
-         - run: echo "Hello World from GitHub Actions with manual" # step 1
+env: # global env variables
+  os: ubuntu
+
+jobs:
+  build: # job name
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest] # jobs matrix
+        # node: [21, 22] # can use multiple matrix
+        node: [22] # can use multiple matrix
+    runs-on: ${{ matrix.os }} # can use custom runners too
+    steps:
+      - name: Checkout code # git clone
+        uses: actions/checkout@v5 # checkout code
+
+      # install system dependency
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: '${{ matrix.node }}'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+      #   working-directory: ./frontend # change directory
+
+      - name: prisma generate
+        run: npx prisma generate
+
+      # - name: Cache node modules
+      #   id: cache-node-modules
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: node_modules
+      #     key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-node-modules-
+
+      - name: Build the project
+        run: npm run build
+
+      - name: Operation System
+        run: echo "This is running on $os"
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linter
+        run: npm run lint
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    needs: build # job dependency
+    # permissions: # job level permission
+    #   contents: read # for actions/checkout
+    #   packages: write # for uploading code coverage to github package registry
+      # id-token: write # for actions/checkout
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      # - name: Cache node modules
+      #   id: cache-node-modules
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: node_modules
+      #     key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-node-modules-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm run test
+
+      - name: Run code coverage
+        run: npm run test:cov
+
+      - name: upload code coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage
