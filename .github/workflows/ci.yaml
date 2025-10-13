@@ -21,7 +21,7 @@ jobs:
         node: [22] # can use multiple matrix
     runs-on: ${{ matrix.os }} # can use custom runners too
     steps:
-      - name: Checkout code # git clone
+      - name: Checkout code # git clones
         uses: actions/checkout@v5 # checkout code
 
       # install system dependency
