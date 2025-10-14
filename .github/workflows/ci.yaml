@@ -1,6 +1,9 @@
 name: CI WorkFlow
 
 on:
+  push:
+    branches:
+      - main # trigger github event
   pull_request:
     branches:
       - main # trigger github event
@@ -91,7 +94,7 @@ jobs:
           --health-retries 5
 
     needs: build # job dependency
-    # permissions: # job level permission
+    # permissions: # job level permissions
     #   contents: read # for actions/checkout
     #   packages: write # for uploading code coverage to github package registry
       # id-token: write # for actions/checkout
