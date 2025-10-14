@@ -12,7 +12,7 @@ on:
 
 concurrency: # prevent multiple run
   group: 'ci-workflow' # unique group name
-  cancel-in-progress: false # cancel in-progress runs
+  cancel-in-progress: true # cancel in-progress runs
 
 # on: workflow_dispatch // manual trigger
 
@@ -83,20 +83,20 @@ jobs:
     env:
       DATABASE_URL: postgresql://${{secrets.POSTGRES_USERNAME}}:${{secrets.POSTGRES_PASSWORD}}@localhost:5432/shop-product-docker
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:17
-        env:
-          POSTGRES_USER: ${{secrets.POSTGRES_USERNAME}}
-          POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
-          POSTGRES_DB: shop-product-docker
-        ports:
-          - "5432:5432"
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+    # services:
+    #   postgres:
+    #     image: postgres:17
+    #     env:
+    #       POSTGRES_USER: ${{secrets.POSTGRES_USERNAME}}
+    #       POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
+    #       POSTGRES_DB: shop-product-docker
+    #     ports:
+    #       - "5432:5432"
+    #     options: >-
+    #       --health-cmd pg_isready
+    #       --health-interval 10s
+    #       --health-timeout 5s
+    #       --health-retries 5
 
     needs: build # job dependency
     # permissions: # job level permissions
@@ -113,6 +113,24 @@ jobs:
           node-version: '24'
           cache: 'npm'
 
+          # Start PostgreSQL with Docker
+      - name: Start PostgreSQL container
+        run: |
+          docker run -d \
+            --name postgres-test \
+            -e POSTGRES_USER=${{secrets.POSTGRES_USERNAME}} \
+            -e POSTGRES_PASSWORD=${{secrets.POSTGRES_PASSWORD}} \
+            -e POSTGRES_DB=shop-product-docker \
+            -p 5432:5432 \
+            postgres:17
+
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          until docker exec postgres-test pg_isready -U ${{secrets.POSTGRES_USERNAME}}; do
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
+          
       # - name: Cache node modules
       #   id: cache-node-modules
       #   uses: actions/cache@v4
