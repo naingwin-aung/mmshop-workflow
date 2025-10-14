@@ -91,7 +91,7 @@ jobs:
           --health-retries 5
 
     needs: build # job dependency
-    # permissions: # job level permissions
+    # permissions: # job level permission
     #   contents: read # for actions/checkout
     #   packages: write # for uploading code coverage to github package registry
       # id-token: write # for actions/checkout
