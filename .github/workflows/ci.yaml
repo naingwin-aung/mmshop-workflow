@@ -10,6 +10,10 @@ on:
     # types: [opened, synchronize, reopened, closed]
     types: [opened, synchronize, reopened]
 
+concurrency: # prevent multiple runs
+  group: 'ci-workflow' # unique group name
+  cancel-in-progress: false # cancel in-progress runs
+
 # on: workflow_dispatch // manual trigger
 
 # env: # global env variables
