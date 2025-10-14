@@ -3,7 +3,7 @@ import { ProductService } from './product.service';
 import { PrismaService } from './prisma.service';
 import { Product } from '../../generated/prisma';
 
-describe('ProductService (Integration)', () => {
+describe('ProductService (Real Database Integration)', () => {
   let service: ProductService;
   let prisma: PrismaService;
 
@@ -14,6 +14,9 @@ describe('ProductService (Integration)', () => {
 
     service = module.get<ProductService>(ProductService);
     prisma = module.get<PrismaService>(PrismaService);
+
+    // Verify database connection
+    await prisma.$connect();
   });
 
   beforeEach(async () => {
@@ -135,7 +138,6 @@ describe('ProductService (Integration)', () => {
         price: 9.99,
         productType: 'Other',
         productCategory: 'Miscellaneous',
-        // descriptionShort and descriptionLong are optional
       };
 
       // Act

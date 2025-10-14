@@ -72,7 +72,24 @@ jobs:
         run: npm run lint
 
   unit-tests:
+    env:
+      DATABASE_URL: postgresql://postgres:1234@localhost:5432/shop-product-docker
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgre:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: 1234
+          POSTGRES_DB: shop-product-docker
+        ports:
+          - "5432:5432"
+        options:
+          --health-cmd pg_isready -U postgres
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     needs: build # job dependency
     # permissions: # job level permission
     #   contents: read # for actions/checkout
@@ -99,6 +116,12 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Run prisma generate
+        run: npx prisma generate
+
+      - name: Migrate Database
+        run: npm run db:migrate
 
       - name: Run unit tests
         run: npm run test
