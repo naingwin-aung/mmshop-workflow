@@ -3,7 +3,7 @@ name: CI WorkFlow
 on:
   push:
     branches:
-      - main # trigger github event
+      - main # trigger github events
   pull_request:
     branches:
       - main # trigger github event
