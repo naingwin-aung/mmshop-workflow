@@ -162,35 +162,36 @@ jobs:
           name: coverage-report
           path: coverage
           
-  dockernize:
-    runs-on: ubuntu-latest
-    needs:
-      - build
-      - lint
-      - unit-tests
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
+  # dockernize:
+  #   if: github.ref == 'refs/heads/main' || github.event_name == 'push' || github.event_name == 'pull_request' # only run on main branch
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - build
+  #     - lint
+  #     - unit-tests
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v5
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+  #     - name: Set up QEMU
+  #       uses: docker/setup-qemu-action@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v3
 
-      - name: Build docker image
-        run: |
-          docker buildx build \
-            --platform linux/amd64,linux/arm64 \
-            -t mmshop-product-api . --load
+  #     - name: Build docker image
+  #       run: |
+  #         docker buildx build \
+  #           --platform linux/amd64,linux/arm64 \
+  #           -t mmshop-product-api . --load
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+  #     - name: Login to DockerHub
+  #       uses: docker/login-action@v3
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
-      - name: Push to DockerHub
-        run: |
-          docker tag mmshop-product-api:latest ${{ secrets.DOCKERHUB_USERNAME }}/mmshop-product-api:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/mmshop-product-api:latest
+  #     - name: Push to DockerHub
+  #       run: |
+  #         docker tag mmshop-product-api:latest ${{ secrets.DOCKERHUB_USERNAME }}/mmshop-product-api:latest
+  #         docker push ${{ secrets.DOCKERHUB_USERNAME }}/mmshop-product-api:latest
