@@ -6,7 +6,7 @@ export class AppService {
     return {
       up: true,
       ready: true,
-      message: 'Application v0.0.1 is running!',
+      message: 'Application v0.0.1 is on release v.0.0.1 running!',
     };
   }
 }
