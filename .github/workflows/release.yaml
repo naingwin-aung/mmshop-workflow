@@ -161,6 +161,7 @@ jobs:
   
   common-jobs:
       uses: ./.github/workflows/common-jobs.yaml
+      secrets: inherit
           
   dockernize:
     runs-on: ubuntu-latest
