@@ -2,10 +2,10 @@ name: CI WorkFlow
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened]
     branches:
       - release/** # trigger github event
     # types: [opened, synchronize, reopened, closed]
-    types: [opened, synchronize, reopened]
 
 concurrency: # prevent multiple run
   # group: 'ci-workflow' # unique group name
@@ -160,7 +160,6 @@ jobs:
           path: coverage
           
   dockernize:
-    # if: github.ref == 'refs/heads/main' || github.event_name == 'push' || github.event_name == 'pull_request' # only run on main branch
     runs-on: ubuntu-latest
     needs:
       - build
@@ -180,13 +179,13 @@ jobs:
         run: |
           docker buildx build \
             --platform linux/amd64,linux/arm64 \
-            -t mmshop-product-api .
+            -t mmshop-product-api . --load
 
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Push to DockerHub
         run: |
