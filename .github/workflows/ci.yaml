@@ -164,6 +164,10 @@ jobs:
 
   common-jobs:
       uses: ./.github/workflows/common-jobs.yaml
+      # secrets: inherit
+      secrets:
+        POSTGRES_USERNAME: ${{ secrets.POSTGRES_USERNAME }}
+        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           
   # dockernize:
   #   if: github.ref == 'refs/heads/main' || github.event_name == 'push' || github.event_name == 'pull_request' # only run on main branch
