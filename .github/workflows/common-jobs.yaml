@@ -9,7 +9,7 @@ on:
           required: true
       inputs:
         is_release:
-          required: false
+          required: true
           default: false
           type: boolean
 
@@ -56,7 +56,7 @@ jobs:
         run: echo "This is running on $os"
 
   lint:
-    if: ${{ inputs.is_release == true }}
+    if: inputs.is_release == false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
