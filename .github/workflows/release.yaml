@@ -178,7 +178,7 @@ jobs:
       - common-jobs
     steps:
       - name: Output common jobs status
-        run: echo "Common jobs success status: ${{ needs.common-jobs.outputs.is_success }}"
+        run: 'echo "Common jobs success status: ${{ needs.common-jobs.outputs.is_success }}"'
         
       - name: Checkout code
         uses: actions/checkout@v5
