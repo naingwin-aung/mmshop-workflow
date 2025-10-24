@@ -76,14 +76,14 @@ jobs:
 
   test:
     env:
-      DATABASE_URL: postgresql://${{ inputs.POSTGRES_USERNAME }}:${{ inputs.POSTGRES_PASSWORD }}@localhost:5432/shop-product-docker
+      DATABASE_URL: postgresql://${{ secrets.POSTGRES_USERNAME }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/shop-product-docker
     runs-on: ubuntu-latest
     # services:
     #   postgres:
     #     image: postgres:17
     #     env:
-    #       POSTGRES_USER: ${{ inputs.POSTGRES_USERNAME }}
-    #       POSTGRES_PASSWORD: ${{ inputs.POSTGRES_PASSWORD }}
+    #       POSTGRES_USER: ${{ secrets.POSTGRES_USERNAME }}
+    #       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
     #       POSTGRES_DB: shop-product-docker
     #     ports:
     #       - "5432:5432"
@@ -113,15 +113,15 @@ jobs:
         run: |
           docker run -d \
             --name postgres-test \
-            -e POSTGRES_USER=${{ inputs.POSTGRES_USERNAME }} \
-            -e POSTGRES_PASSWORD=${{ inputs.POSTGRES_PASSWORD }} \
+            -e POSTGRES_USER=${{ secrets.POSTGRES_USERNAME }} \
+            -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
             -e POSTGRES_DB=shop-product-docker \
             -p 5432:5432 \
             postgres:17
 
       - name: Wait for PostgreSQL to be ready
         run: |
-          until docker exec postgres-test pg_isready -U ${{ inputs.POSTGRES_USERNAME }}; do
+          until docker exec postgres-test pg_isready -U ${{ secrets.POSTGRES_USERNAME }}; do
             echo "Waiting for PostgreSQL..."
             sleep 2
           done
