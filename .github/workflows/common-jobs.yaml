@@ -12,6 +12,10 @@ on:
           required: true
           default: false
           type: boolean
+      outputs:
+        is_success:
+          description: 'Indicates if the common jobs were successful'
+          value: ${{ jobs.test.result == 'success' }}
 
 jobs:
   build: # job name
