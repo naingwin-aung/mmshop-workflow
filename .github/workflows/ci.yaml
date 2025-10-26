@@ -168,6 +168,8 @@ jobs:
       secrets:
         POSTGRES_USERNAME: ${{ secrets.POSTGRES_USERNAME }}
         POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      with:
+        is_release: false
           
   # dockernize:
   #   if: github.ref == 'refs/heads/main' || github.event_name == 'push' || github.event_name == 'pull_request' # only run on main branch
