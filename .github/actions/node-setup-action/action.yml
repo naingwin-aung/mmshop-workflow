@@ -1,0 +1,25 @@
+name: "Node Setup Action"
+description: "An action to set up Node.js environment"
+
+inputs:
+  node-version:
+    description: "The version of Node.js to install"
+    required: false
+    default: "20"
+outputs:
+  is_success:
+    description: "Indicates if the Node setup was successful"
+    value: ${{ steps.setup-node.outcome }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Node
+      uses: actions/setup-node@v5
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      shell: bash
+      run: npm ci
