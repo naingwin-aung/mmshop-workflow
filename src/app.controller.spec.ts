@@ -19,7 +19,7 @@ describe('AppController', () => {
       expect(appController.getHello()).toStrictEqual({
         up: true,
         ready: true,
-        message: 'Application v0.0.1 is runnings!',
+        message: 'Application v0.0.1 is running!',
       });
     });
   });
