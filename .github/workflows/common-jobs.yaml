@@ -27,8 +27,8 @@ jobs:
     # runs-on: ${{ matrix.os }} # can use custom runners too
     runs-on: ubuntu-latest
     steps:
-      # - name: Checkout code # git clones
-      #   uses: actions/checkout@v5 # checkout code
+      - name: Checkout code # git clones
+        uses: actions/checkout@v5 # checkout code
 
       # # install system dependencies
       # - name: Set up Node
@@ -40,6 +40,7 @@ jobs:
       # - name: Install dependencies
       #   run: npm ci
       # #   working-directory: ./frontend # change directory
+
       - name: set up node and install dependencies
         id: setup-node
         uses: ./.github/actions/node-setup-action
@@ -80,6 +81,8 @@ jobs:
 
       # - name: Install dependencies
       #   run: npm ci
+      - name: Checkout code # git clones
+        uses: actions/checkout@v5 # checkout code
 
       - name: set up node and install dependencies
         uses: ./.github/actions/node-setup-action
@@ -114,8 +117,8 @@ jobs:
     #   packages: write # for uploading code coverage to github package registry
       # id-token: write # for actions/checkout
     steps:
-      # - name: Checkout code
-      #   uses: actions/checkout@v5
+      - name: Checkout code
+        uses: actions/checkout@v5
 
       # - name: Set up Node
       #   uses: actions/setup-node@v5
