@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
-      - release/** # trigger github event
+      - release/** # trigger github events
     # types: [opened, synchronize, reopened, closed]
 
 concurrency: # prevent multiple run
